@@ -80,10 +80,39 @@ const update = (request, response) => {
   )
 }
 
+const updateNivel = (request, response) => {
+  const id = request.params.id
+  const dataInicio = request.body.dataInicio
+  const dataFim = request.body.dataFim
+  const options = { new: true }
+
+    const nivel = (Math.abs(new Date(dataInicio) - new Date(dataFim)) / 3600000) / 4
+
+
+  pokemonsModel.findByIdAndUpdate(
+    id,
+    {nivel: nivel}, 
+    options,
+    (error, pokemon) => {
+      if (error) {
+        return response.status(500).send(error)
+      }
+
+      if (pokemon) {
+
+        return response.status(200).send(pokemon)
+      }
+
+      return response.status(404).send('Pokémon não encontrado.')
+    }
+  )
+}
+
 module.exports = {
   getAll,
   getById,
   add,
   remove,
+  updateNivel,
   update
 }
