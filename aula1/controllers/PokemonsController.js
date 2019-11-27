@@ -3,6 +3,12 @@ const pokemonsModel = require('../models/PokemonsSchema')
 
 connect()
 
+const calcularNivel = (inicio, fim, nivelAtual) => {
+  const novoNivel = (Math.abs(new Date(inicio) - new Date(fim)) / 3600000) / 4
+
+  return novoNivel + nivelAtual;
+}
+
 const getAll = (request, response) => {
   pokemonsModel.find((error, pokemons) => {
     if (error) {
@@ -68,7 +74,7 @@ const update = (request, response) => {
     options,
     (error, pokemon) => {
       if (error) {
-        return response.status(500).sned(error)
+        return response.status(500).send(error)
       }
 
       if (pokemon) {
@@ -80,18 +86,15 @@ const update = (request, response) => {
   )
 }
 
-const updateNivel = (request, response) => {
+const treinar = async (request, response) => {
   const id = request.params.id
-  const dataInicio = request.body.dataInicio
-  const dataFim = request.body.dataFim
   const options = { new: true }
-
-    const nivel = (Math.abs(new Date(dataInicio) - new Date(dataFim)) / 3600000) / 4
-
+  const pokemon = await pokemonsModel.findById(id, 'nivel')
+  const novoNivel = calcularNivel(request.body.inicio, request.body.fim, pokemon.nivel)
 
   pokemonsModel.findByIdAndUpdate(
     id,
-    {nivel: nivel}, 
+    { nivel: novoNivel },
     options,
     (error, pokemon) => {
       if (error) {
@@ -99,11 +102,10 @@ const updateNivel = (request, response) => {
       }
 
       if (pokemon) {
-
         return response.status(200).send(pokemon)
       }
 
-      return response.status(404).send('Pokémon não encontrado.')
+      return response.status(404).send('Pokémon não encontrado')
     }
   )
 }
@@ -113,6 +115,6 @@ module.exports = {
   getById,
   add,
   remove,
-  updateNivel,
-  update
+  update,
+  treinar
 }
