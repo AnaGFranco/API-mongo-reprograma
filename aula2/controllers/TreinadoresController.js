@@ -4,6 +4,12 @@ const { pokemonsModel } = require('../models/PokemonsSchema')
 
 connect()
 
+const calcularNivel = (inicio, fim, nivelAtual) => {
+  const diff = Math.abs(new Date(inicio) - new Date(fim)) / 3600000
+
+  return (diff / 4) + nivelAtual;
+}
+
 const getAll = (request, response) => {
   treinadoresModel.find((error, treinadores) => {
     if (error) {
@@ -86,7 +92,7 @@ const addPokemon = async (request, response) => {
   const pokemon = request.body
   const novoPokemon = new pokemonsModel(pokemon)
   const treinador = await treinadoresModel.findById(treinadorId)
-
+  console.log(treinador, 'TAKI')
   treinador.pokemons.push(novoPokemon)
   treinador.save((error) => {
     if (error) {
@@ -116,36 +122,6 @@ const treinarPokemon = async (request, response) => {
   })
 }
 
-const getPokemonByTreinador = async (request, response) => {
-    const treinadorId = request.params.treinadorId
-    const pokemonId = request.params.pokemonId
-
-    const treinador = await treinadoresModel.findById(treinadorId)
-    
-    treinador.pokemons.find((error, pokemon) =>  {
-    
-      if (pokemonId == pokemon._id) {
-        return response.status(200).send(pokemons)
-      }
-  
-      return response.status(500).send(error)
-    })
-}
-
-const getPokemons = async (request, response) => {
-  const treinadorId = request.params.treinadorId
-
-  const treinador = await treinadoresModel.findById(treinadorId)
-
-  treinador.pokemons.find((error, pokemons) =>  {
-    
-    if (error) {
-      return response.status(500).send(error)
-    }
-
-    return response.status(200).send(pokemons)
-  })
-}
 module.exports = {
   getAll,
   getById,
@@ -153,7 +129,5 @@ module.exports = {
   remove,
   update,
   addPokemon,
-  treinarPokemon,
-  getPokemonByTreinador,
-  getPokemons
+  treinarPokemon
 }
