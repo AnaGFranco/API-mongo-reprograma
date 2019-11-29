@@ -1,6 +1,7 @@
 const { connect } = require('../models/Repository')
 const treinadoresModel = require('../models/TreinadoresSchema')
 const { pokemonsModel } = require('../models/PokemonsSchema')
+const bcrypt = require('bcryptjs')
 
 connect()
 
@@ -37,6 +38,8 @@ const getById = (request, response) => {
 }
 
 const add = (request, response) => {
+  const senhaCriptografada = bcrypt.hashSync(request.body.senha)
+  request.body.senha = senhaCriptografada
   const novoTreinador = new treinadoresModel(request.body)
 
   novoTreinador.save((error) => {
@@ -75,7 +78,7 @@ const update = (request, response) => {
     options,
     (error, treinador) => {
       if (error) {
-        return response.status(500).sned(error)
+        return response.status(500).send(error)
       }
 
       if (treinador) {
