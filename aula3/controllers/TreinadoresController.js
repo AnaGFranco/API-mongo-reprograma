@@ -145,12 +145,15 @@ const treinarPokemon = async (request, response) => {
   })
 }
 
-const getPokemons = async (request, response) => {
+
+const verificarUsuario =  (request, response) =>{
+
   const authHeader = request.get('authorization')
   let autenticado = false
 
   if (!authHeader) {
-    return response.status(401).send('Você precisa fazer login!')
+    // return response.status(401).send('Você precisa fazer login!')
+    return autenticado
   }
 
   const token = authHeader.split(' ')[1]
@@ -163,9 +166,36 @@ const getPokemons = async (request, response) => {
     }
   })
 
-  if (!autenticado) {
-    return response.status(403).send('Acesso negado.')
-  }
+  // if (!autenticado) {
+  //   return response.status(403).send('Acesso negado.')
+  // }
+  return autenticado;
+
+}
+
+const getPokemons = async (request, response) => {
+
+  verificarUsuario(request, response)
+  // const authHeader = request.get('authorization')
+  // let autenticado = false
+
+  // if (!authHeader) {
+  //   return response.status(401).send('Você precisa fazer login!')
+  // }
+
+  // const token = authHeader.split(' ')[1]
+
+  // jwt.verify(token, CHAVE_PRIVADA, (error, decoded) => {
+  //   if (error) {
+  //     autenticado = false
+  //   } else {
+  //     autenticado = true
+  //   }
+  // })
+
+  // if (!autenticado) {
+  //   return response.status(403).send('Acesso negado.')
+  // }
 
   const treinadorId = request.params.id
   await treinadoresModel.findById(treinadorId, (error, treinador) => {
@@ -182,6 +212,13 @@ const getPokemons = async (request, response) => {
 }
 
 const updatePokemon = async (request, response) => {
+
+  const autenticado = verificarUsuario(request);
+  
+  if (!autenticado){
+    return response.status(403).send('Não autorizado')
+  } 
+
   const treinadorId = request.params.treinadorId
   const pokemonId = request.params.pokemonId
   const options = { new: true }
