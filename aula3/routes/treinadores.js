@@ -4,6 +4,10 @@ const router = express.Router();
 const controller = require("../controllers/TreinadoresController")
 const jwt = require('jsonwebtoken')
 const SEGREDO = process.env.SEGREDO
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0eaafe66b67933a828ae39edf1e8eb108dcabfcc
 const autenticar = (request, response, next) => {
   const authHeader = request.get('authorization')
   let autenticado = false
@@ -64,7 +68,11 @@ const autenticarAdmin = (request, response, next) => {
 
 router.get('', autenticar, controller.getAll)
 router.post('', autenticarAdmin, controller.add)
+<<<<<<< HEAD
 router.post('/admin', controller.addAdmin)
+=======
+router.post('/admin', autenticarAdmin, controller.addAdmin)
+>>>>>>> 0eaafe66b67933a828ae39edf1e8eb108dcabfcc
 router.get('/:id', autenticar, controller.getById)
 router.patch('/:id', autenticar, controller.update)
 router.delete('/:id', autenticar, controller.remove)

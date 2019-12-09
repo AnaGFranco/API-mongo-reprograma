@@ -7,12 +7,39 @@ const SEGREDO = process.env.SEGREDO
 
 connect()
 
+const verificarUsuario = (request, response) =>{
+  const authHeader = request.get('authorization')
+  let autenticado = false
+
+  if (!authHeader) {
+    // return response.status(401).send('Você precisa fazer login!')
+    return autenticado
+    }
+
+<<<<<<< HEAD
+=======
+  const token = authHeader.split(' ')[1]
+
+  jwt.verify(token, CHAVE_PRIVADA, (error, decoded) => {
+    if (error) {
+      autenticado = false
+    } else {
+      autenticado = true
+    }
+  })
+  return autenticado
+//   if (!autenticado) {
+//     return response.status(403).send('Acesso negado.')
+//   }
+ }
+
 const calcularNivel = (inicio, fim, nivelAtual) => {
   const diff = Math.abs(new Date(inicio) - new Date(fim)) / 3600000
 
   return (diff / 4) + nivelAtual;
 }
 
+>>>>>>> 0eaafe66b67933a828ae39edf1e8eb108dcabfcc
 const getAll = (request, response) => {
   treinadoresModel.find((error, treinadores) => {
     if (error) {
@@ -109,6 +136,7 @@ const update = (request, response) => {
 }
 
 const addPokemon = async (request, response) => {
+  
   const treinadorId = request.params.treinadorId
   const pokemon = request.body
   const options = { new: true }
@@ -143,6 +171,10 @@ const treinarPokemon = async (request, response) => {
 }
 
 const getPokemons = async (request, response) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0eaafe66b67933a828ae39edf1e8eb108dcabfcc
   const treinadorId = request.params.id
   await treinadoresModel.findById(treinadorId, (error, treinador) => {
     if (error) {
@@ -157,11 +189,21 @@ const getPokemons = async (request, response) => {
   })
 }
 
+<<<<<<< HEAD
 const updatePokemon = (request, response) => {
   const treinadorId = request.params.treinadorId
   const pokemonId = request.params.pokemonId
   const options = { new: true }
 
+=======
+const updatePokemon = async (request, response) => {
+
+  const treinadorId = request.params.treinadorId
+  const pokemonId = request.params.pokemonId
+  const options = { new: true }
+  const updateBody = await montarPokemonUpdateBody(request.body)
+ 
+>>>>>>> 0eaafe66b67933a828ae39edf1e8eb108dcabfcc
   treinadoresModel.findOneAndUpdate(
     { _id: treinadorId, 'pokemons._id': pokemonId },
     {
